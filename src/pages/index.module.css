@@ -6,6 +6,33 @@
   height: 100vh;
   min-height: 100vh;
   padding: 0 0.5rem;
+  background-color: white;
+}
+
+.turn {
+  width: 200px;
+  height: 50px;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 640px;
+  height: 640px;
+  background-color: green;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #000;
+}
+
+.stone {
+  height: 80px;
+  width: 80px;
+  background-color: white;
+  border-radius: 40px;
 }
 
 .main {

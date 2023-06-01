@@ -1,59 +1,163 @@
+import { useState } from 'react';
 import styles from './index.module.css';
-
 const Home = () => {
+  const [turncolor, setTurncolor] = useState(1);
+  //prettier=ignore
+  const [board, setboard] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+  function erase() {
+    for (let allx = 0; allx <= 7; allx += 1) {
+      for (let ally = 0; ally <= 7; ally += 1) {
+        if (board[ally][allx] === 3) {
+          board[ally][allx] = 0;
+        }
+      }
+    }
+  }
+  function red() {
+    for (let allx = 0; allx <= 7; allx += 1) {
+      for (let ally = 0; ally <= 7; ally += 1) {
+        if (board[ally][allx] === 0) {
+          for (let movey = -1; movey <= 1; movey += 1) {
+            for (let movex = -1; movex <= 1; movex += 1) {
+              if (
+                board[ally + movey] !== undefined &&
+                board[allx + movex] !== undefined &&
+                board[ally + movey][allx + movex] === 3 - turncolor
+              ) {
+                for (let distance = 2; distance <= 7; distance += 1) {
+                  if (
+                    board[ally + distance * movey] !== undefined &&
+                    board[allx + distance * movex] !== undefined &&
+                    board[ally + distance * movey][allx + distance * movex] === 0
+                  ) {
+                    break;
+                  }
+                  if (
+                    board[ally + distance * movey] !== undefined &&
+                    board[allx + distance * movex] !== undefined &&
+                    board[ally + distance * movey][allx + distance * movex] === turncolor
+                  ) {
+                    board[ally][allx] = 3;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  erase();
+  red();
+  // let pass;
+  // if (pass === 1 || pass === 2 || pass === 3) [];
+  // else [(pass = 0)];
+  // let find_red;
+  // for (let allx = 0; allx <= 7; allx += 1) {
+  //   for (let ally = 0; ally <= 7; ally += 1) {
+  //     if (board[ally][allx] === 3 && pass <= 2) {
+  //       find_red = true;
+  //       pass = 0;
+  //     }
+  //   }
+  // }
+
+  // if (find_red !== true && pass <= 2) {
+  //   setTurncolor(3 - turncolor);
+  //   find_red = false;
+  //   pass += 1;
+  // }
+
+  let st = 0;
+  const clickcell = (x: number, y: number) => {
+    console.log(x, y);
+    const newBoard: number[][] = JSON.parse(JSON.stringify(board));
+    if (board[y][x] === 0 || board[y][x] === 3) {
+      for (let movey = -1; movey <= 1; movey += 1) {
+        for (let movex = -1; movex <= 1; movex += 1) {
+          if (
+            board[y + movey] !== undefined &&
+            board[x + movex] !== undefined &&
+            board[y + movey][x + movex] === 3 - turncolor
+          ) {
+            for (let distance = 2; distance <= 7; distance += 1) {
+              if (
+                board[y + distance * movey] !== undefined &&
+                board[x + distance * movex] !== undefined &&
+                board[y + distance * movey][x + distance * movex] === 0
+              ) {
+                break;
+              }
+              if (st === 50) {
+                st = 0;
+                break;
+              }
+              if (
+                board[y + distance * movey] !== undefined &&
+                board[x + distance * movex] !== undefined &&
+                board[y + distance * movey][x + distance * movex] === turncolor
+              ) {
+                for (let flip = 0; flip <= distance; flip += 1) {
+                  newBoard[y + flip * movey][x + flip * movex] = turncolor;
+                  setTurncolor(3 - turncolor);
+                  setboard(newBoard);
+                  st = 50;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  let white_num = 0;
+  for (let x = 0; x <= 7; x += 1) {
+    for (let y = 0; y <= 7; y += 1) {
+      if (board[y][x] === 2) {
+        white_num += 1;
+      }
+    }
+  }
+
+  let black_num = 0;
+  for (let x = 0; x <= 7; x += 1) {
+    for (let y = 0; y <= 7; y += 1) {
+      if (board[y][x] === 1) {
+        black_num += 1;
+      }
+    }
+  }
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code} style={{ backgroundColor: '#fafafa' }}>
-            pages/index.js
-          </code>
-        </p>
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a className={styles.card} href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a className={styles.card} href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            className={styles.card}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <img src="vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <div className={styles.board}>
+        {board.map((row, y) =>
+          row.map((color, x) => (
+            <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickcell(x, y)}>
+              {color !== 0 && (
+                <div
+                  className={styles.stone}
+                  style={{ background: color === 1 ? `#000` : color === 2 ? `#fff` : '#fb0404' }}
+                />
+              )}
+            </div>
+          ))
+        )}
+      </div>
+      <div className={styles.turn}>
+        <h1>{turncolor === 1 ? '黒' : '白'}の番です</h1>
+        <h1>白 {white_num}</h1>
+        <h1>{black_num} 黒</h1>
+      </div>
     </div>
   );
 };
-
 export default Home;
