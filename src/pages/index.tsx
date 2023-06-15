@@ -7,21 +7,25 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 2, 1, 0, 0, 0],
     [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  const [pass, setpass] = useState(0);
   function erase() {
     for (let allx = 0; allx <= 7; allx += 1) {
       for (let ally = 0; ally <= 7; ally += 1) {
-        if (board[ally][allx] === 3) {
+        if (board[ally][allx] >= 3) {
           board[ally][allx] = 0;
         }
       }
     }
   }
+  let stopx = 0;
+  let stopy = 0;
+  let turn_num = 0;
   function red() {
     for (let allx = 0; allx <= 7; allx += 1) {
       for (let ally = 0; ally <= 7; ally += 1) {
@@ -41,16 +45,27 @@ const Home = () => {
                   ) {
                     break;
                   }
+                  if (stopx === movex && stopy === movey) {
+                    stopx = 50;
+                    stopy = 50;
+                    break;
+                  }
                   if (
                     board[ally + distance * movey] !== undefined &&
                     board[allx + distance * movex] !== undefined &&
                     board[ally + distance * movey][allx + distance * movex] === turncolor
                   ) {
-                    board[ally][allx] = 3;
+                    turn_num += distance - 1;
+                    stopx = movex;
+                    stopy = movey;
                   }
                 }
               }
             }
+          }
+          if (turn_num > 0) {
+            board[ally][allx] = 2 + turn_num;
+            turn_num = 0;
           }
         }
       }
@@ -58,30 +73,31 @@ const Home = () => {
   }
   erase();
   red();
-  // let pass;
-  // if (pass === 1 || pass === 2 || pass === 3) [];
-  // else [(pass = 0)];
-  // let find_red;
-  // for (let allx = 0; allx <= 7; allx += 1) {
-  //   for (let ally = 0; ally <= 7; ally += 1) {
-  //     if (board[ally][allx] === 3 && pass <= 2) {
-  //       find_red = true;
-  //       pass = 0;
-  //     }
-  //   }
-  // }
 
-  // if (find_red !== true && pass <= 2) {
-  //   setTurncolor(3 - turncolor);
-  //   find_red = false;
-  //   pass += 1;
-  // }
+  function find_red(rednum = 0) {
+    for (let allx = 0; allx <= 7; allx += 1) {
+      for (let ally = 0; ally <= 7; ally += 1) {
+        if (board[ally][allx] === 3) {
+          rednum += 1;
+        }
+      }
+    }
+    return rednum;
+  }
+  const x = find_red();
+  if (x === 0 && pass <= 1) {
+    setTurncolor(3 - turncolor);
+    setpass(pass + 1);
+  } else if (x > 0 && pass >= 1) {
+    setpass(pass - pass);
+  }
 
-  let st = 0;
+  stopx = 0;
+  stopy = 0;
   const clickcell = (x: number, y: number) => {
     console.log(x, y);
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
-    if (board[y][x] === 0 || board[y][x] === 3) {
+    if (board[y][x] === 0 || board[y][x] >= 3) {
       for (let movey = -1; movey <= 1; movey += 1) {
         for (let movex = -1; movex <= 1; movex += 1) {
           if (
@@ -97,8 +113,9 @@ const Home = () => {
               ) {
                 break;
               }
-              if (st === 50) {
-                st = 0;
+              if (stopx === movex && stopy === movey) {
+                stopx = 50;
+                stopy = 50;
                 break;
               }
               if (
@@ -108,9 +125,10 @@ const Home = () => {
               ) {
                 for (let flip = 0; flip <= distance; flip += 1) {
                   newBoard[y + flip * movey][x + flip * movex] = turncolor;
-                  setTurncolor(3 - turncolor);
+                  stopx = movex;
+                  stopy = movey;
                   setboard(newBoard);
-                  st = 50;
+                  setTurncolor(3 - turncolor);
                 }
               }
             }
@@ -145,17 +163,25 @@ const Home = () => {
               {color !== 0 && (
                 <div
                   className={styles.stone}
-                  style={{ background: color === 1 ? `#000` : color === 2 ? `#fff` : '#fb0404' }}
-                />
+                  style={{ background: color === 1 ? `#000` : color === 2 ? `#fff` : '#ff1414b5' }}
+                >
+                  {color > 2 && (
+                    <div>
+                      <h1>{color - 2}</h1>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           ))
         )}
       </div>
-      <div className={styles.turn}>
+      <div className={styles.turndetails}>
         <h1>{turncolor === 1 ? '黒' : '白'}の番です</h1>
         <h1>白 {white_num}</h1>
         <h1>{black_num} 黒</h1>
+        <h1>{pass}</h1>
+        <h1>{x}</h1>
       </div>
     </div>
   );
