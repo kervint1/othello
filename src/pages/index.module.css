@@ -9,6 +9,12 @@
   background-color: white;
 }
 
+.turndetails {
+  width: 200px;
+  height: 50px;
+  color: #0070f3;
+}
+
 .board {
   box-shadow: 3px 3px 12px 12px #000;
   display: flex;
