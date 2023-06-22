@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:next": "next dev -p 3000",
-    "dev:hcm": "hcm src/**/*.module.css -w",
+    "dev:hcm": "hcm 'src/**/*.module.css' -w",
     "build": "next build && next export",
     "lint": "run-p lint:js lint:prettier lint:style",
     "lint:js": "eslint --ext .ts,.tsx,.js --ignore-path .gitignore .",
