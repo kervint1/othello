@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:next": "next dev -p 3000",
-    "dev:hcm": "hcm 'src/**/*.module.css' -w",
+    "dev:hcm": "hcm 'src/**/*.module.{css,scss,less}' -w",
     "build": "next build && next export",
     "lint": "run-p lint:js lint:prettier lint:style",
     "lint:js": "eslint --ext .ts,.tsx,.js --ignore-path .gitignore .",
@@ -13,7 +13,7 @@
     "lint:style": "stylelint \"src/**/*.css\"",
     "lint:fix": "npm run lint:js -- --fix && prettier --write \"./**/*.{ts,tsx,js}\" --ignore-path .gitignore && npm run lint:style -- --fix",
     "start": "next start",
-    "typecheck": "hcm src/**/*.module.css && hcm src/**/*.module.scss && hcm src/**/*.module.less && tsc --noEmit"
+    "typecheck": "hcm src/**/*.module.css && tsc --noEmit"
   },
   "dependencies": {
     "next": "^13.3.1",
