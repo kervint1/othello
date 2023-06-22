@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Cell } from '../components/Cell';
 import styles from './index.module.css';
 const Home = () => {
   const [turncolor, setTurncolor] = useState(1);
@@ -94,7 +95,7 @@ const Home = () => {
 
   stopx = 0;
   stopy = 0;
-  const clickcell = (x: number, y: number) => {
+  const onClick = (x: number, y: number) => {
     console.log(x, y);
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
     if (board[y][x] === 0 || board[y][x] >= 3) {
@@ -159,20 +160,7 @@ const Home = () => {
       <div className={styles.board}>
         {board.map((row, y) =>
           row.map((color, x) => (
-            <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickcell(x, y)}>
-              {color !== 0 && (
-                <div
-                  className={styles.stone}
-                  style={{ background: color === 1 ? `#000` : color === 2 ? `#fff` : '#ff1414b5' }}
-                >
-                  {color > 2 && (
-                    <div>
-                      <h1>{color - 2}</h1>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            <Cell key={`${x}-${y}`} color={color} onClick={() => onClick(x, y)}></Cell>
           ))
         )}
       </div>
